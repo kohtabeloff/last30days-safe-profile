@@ -25,6 +25,12 @@ This profile answers that question and stops there. It keeps the engine, narrows
 
 Higher-friction or credentialed sources (X via browser cookies, TikTok, Instagram, LinkedIn, Pinterest) stay off unless you explicitly turn them on. Every default is an override, never a lock — pass any upstream flag and it wins.
 
+**What does not change is the quality bar.** Narrowing the defaults is not the same as running the engine badly, and the two are easy to confuse. The instruction file stays short — but the parts that actually drive result quality are kept, in `references/`, read on demand:
+
+- **the query plan** — the agent writes the search plan itself instead of falling back to the engine's headless planner
+- **community targeting** — resolve the 3-5 subreddits where a topic actually lives, including cross-product peers, before searching
+- **the discovery protocol** — `--discover` is three commands, not one; a one-shot run produces no content angles at all
+
 ## Install
 
 **Claude Code:**

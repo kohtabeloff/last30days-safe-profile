@@ -122,6 +122,21 @@ The wrapper ships with this skill at `scripts/find-ideas.sh`. It picks a Python 
 interpreter automatically (override with `LAST30DAYS_PYTHON`), then calls the bundled
 engine at `scripts/last30days.py` with the safe defaults above.
 
+## Reference files
+
+This file stays short on purpose. The heavy detail lives next to it and is
+read on demand:
+
+| File | Read it when |
+|---|---|
+| `references/communities.md` | before planning any run - topic screening, subreddit resolution, category peers |
+| `references/query-plan.md` | before every normal run - the `--plan` schema and rules |
+| `references/discovery-protocol.md` | before any `--discover` run - the three-leg protocol |
+| `references/save-html-brief.md` | only when the user asks for a saved HTML brief |
+
+Read the first three when the run needs them, not preemptively - but do not
+skip them to save a step. They are where the quality difference lives.
+
 ## Operational rules for the agent
 
 If the agent loaded this skill, follow these rules:
@@ -145,21 +160,53 @@ If the agent loaded this skill, follow these rules:
    python3 scripts/last30days.py "topic"
    ```
 
-4. **Treat this as a second-pass enrichment tool, not the first sensor.**
+4. **YOU are the planner. Pass `--plan` on every normal run.**
+   You are the reasoning model - the engine's internal planner is the
+   headless/cron path. A run without `--plan` is a downgraded run, and the
+   engine says so in its log. Schema, rules and the tmpfile pattern:
+   `references/query-plan.md`.
+
+5. **Resolve communities before you plan.**
+   Screen the topic for keyword traps, find the 3-5 subreddits where it
+   actually lives, and add category peers - brand-only subs miss where
+   technique gets discussed. Non-English topics get researched in English and
+   answered in the user's language. Method and category table:
+   `references/communities.md`.
+
+6. **Discovery is three commands, never one.**
+   On any `--discover` run you are the judge: nominate, judge, finalize with
+   your angles. A one-shot run generates no content angles at all - which is
+   the whole deliverable. Protocol: `references/discovery-protocol.md`.
+
+7. **Treat this as a second-pass enrichment tool, not the first sensor.**
    If the user wants fresh momentum, start with X search.
 
-5. **Keep the output compact and useful for content decisions.**
+8. **Keep the output compact and useful for content decisions.**
    Focus on:
    - what people are reacting to
    - what language they use
    - what tension/problem/opportunity appears repeatedly
    - whether the topic feels alive enough for content
 
-6. **Do not broaden sources just because results are thin.**
-   First report thin evidence honestly. Expand only if the user asks.
+9. **Quote the community verbatim; never narrate the tooling.**
+   The evidence carries a `## Top Community Comments` block - real
+   vote-ranked comments with author and URL. Weave at least two of them in
+   as actual quotes, attributed (`u/name`), inside the narrative rather than
+   in a separate section. A top comment with thousands of votes outranks its
+   parent post. Copy comment URLs verbatim, never reconstruct one. And keep
+   engine mechanics out of the deliverable - no "the engine struck out", no
+   "the source came back empty"; report what is true about the topic and drop
+   the junk quietly.
 
-7. **Web is for validation, not replacement.**
-   Use web only to confirm specific details after community signal has surfaced.
+10. **Do not broaden sources just because results are thin.**
+    First report thin evidence honestly. Expand only if the user asks.
+    Widening the *window* is different and allowed: on a thin run, or on an
+    evergreen topic where steady demand matters more than this week's spike,
+    re-run with `--days 30` and say why. Seven days answers "what is hot now";
+    thirty answers "what stays worth making".
+
+11. **Web is for validation, not replacement.**
+    Use web only to confirm specific details after community signal has surfaced.
 
 ## Output shape
 
@@ -221,8 +268,11 @@ scripts/find-ideas.sh "personal AI brand" --days 14
 
 If using discovery mode, do not force the normal scouting defaults onto it unless you intentionally want that.
 
+Discovery runs as three commands, not one - see `references/discovery-protocol.md`.
+The first leg is:
+
 ```bash
-scripts/find-ideas.sh --discover "AI creators"
+scripts/find-ideas.sh --discover --nominate-only --save-dir="$MEMORY_DIR"
 ```
 
 ## Common pitfalls
@@ -245,12 +295,26 @@ scripts/find-ideas.sh --discover "AI creators"
 6. **Turning on browser-cookie paths by default.**
    Keep them off unless explicitly requested.
 
+7. **Running without `--plan` and reading the engine's warning as a missing key.**
+   The engine says "no LLM provider configured" and means "the model skipped
+   its own planning step". You are the provider. Write the plan.
+
+8. **Running `--discover` as a single command.**
+   It returns topic names with no content angles. Run the three-leg protocol.
+
+9. **Searching a non-English topic in its own language.**
+   The sources are English-dominant; the run returns padding. Research in
+   English, answer in the user's language.
+
 ## Verification checklist
 
 - [ ] Wrapper script exists at `scripts/find-ideas.sh`
 - [ ] Wrapper injects safe defaults only when they were not manually overridden
 - [ ] Browser cookies stay off by default
 - [ ] Default source set is constrained
+- [ ] Normal runs carry `--plan` with resolved subreddits
+- [ ] Discovery runs use the three-leg protocol, with one shared `--save-dir`
+- [ ] At least two verbatim community comments appear in the output
 - [ ] A live query returns compact output
 - [ ] The output is useful for content decisions, not bloated research theater
 - [ ] The workflow remains `x_search -> last30days -> web spot-check`
