@@ -1,0 +1,24 @@
+{
+  "name": "last30days-safe-profile",
+  "owner": {
+    "name": "Pavel Belov",
+    "url": "https://github.com/kohtabeloff"
+  },
+  "metadata": {
+    "description": "Marketplace hosting the last30days-safe ideation profile."
+  },
+  "plugins": [
+    {
+      "name": "last30days-safe",
+      "description": "A narrower, safer operating profile for the last30days research engine, tuned for content idea scouting: constrained sources, 7-day window, browser cookies off, compact output.",
+      "version": "3.18.3-pavel-safe",
+      "author": {
+        "name": "Pavel Belov",
+        "url": "https://github.com/kohtabeloff"
+      },
+      "source": "./",
+      "category": "productivity",
+      "homepage": "https://github.com/kohtabeloff/last30days-safe-profile"
+    }
+  ]
+}

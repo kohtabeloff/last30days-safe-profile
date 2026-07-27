@@ -1,0 +1,22 @@
+{
+  "name": "last30days-safe",
+  "version": "3.18.3-pavel-safe",
+  "description": "A narrower, safer operating profile for the last30days research engine, tuned for content idea scouting: constrained sources, 7-day window, browser cookies off, compact output.",
+  "author": {
+    "name": "Pavel Belov",
+    "url": "https://github.com/kohtabeloff"
+  },
+  "homepage": "https://github.com/kohtabeloff/last30days-safe-profile",
+  "repository": "https://github.com/kohtabeloff/last30days-safe-profile",
+  "license": "MIT",
+  "keywords": [
+    "research",
+    "ideation",
+    "content",
+    "youtube",
+    "creator",
+    "reddit",
+    "hacker-news",
+    "trends"
+  ]
+}
